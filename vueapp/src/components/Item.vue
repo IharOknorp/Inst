@@ -1,22 +1,38 @@
 <template>
     <div>
-        {{question}}
-        <pre v-highlightjs><code class="javascript">{{question.questionText2}}</code></pre>
-        <b-form-group v-bind:label='question.questionText'>
-            <b-form-radio v-model="selected" name="some-radios" value="A">A: {{question.options['A']}}</b-form-radio>
-            <b-form-radio v-model="selected" name="some-radios" value="B">B: {{question.options['B']}}</b-form-radio>
-            <b-form-radio v-model="selected" name="some-radios" value="C">C: {{question.options['C']}}</b-form-radio>
-            <b-form-radio v-model="selected" name="some-radios" value="D">D: {{question.options['D']}}</b-form-radio>
-        </b-form-group>
+        <div v-for="question in questions" v-bind:key="question._id">
+            <div v-if="question.index == getCurrentlyIndex()">
+                <pre v-highlightjs><code class="javascript">{{question.questionText2}}</code></pre>
 
-        <div class="mt-3">Selected: <strong>{{ selected }}</strong></div>
-        <b-button
-                :disabled="selected == ''"
-                variant="success"
-                v-on:click="clickButton"
-        >
-            Ответить и перейти к след. вопросу
-        </b-button>
+                <b-form-group v-bind:label='question.questionText'>
+                    <b-form-radio-group
+                            v-model="selected"
+                            :options="getOptions(question)"
+                            name="radios-stacked"
+                            stacked
+                    ></b-form-radio-group>
+                </b-form-group>
+
+<!--                <div class="mt-3">Selected: <strong>{{ selected }}</strong></div>-->
+                <div v-if="question.index < 1">
+                <b-button
+                        :disabled="selected == ''"
+                        variant="success"
+                        @click="clickButton(question._id, selected )"
+                >
+                    Ответить и перейти к след. вопросу
+                </b-button>
+                </div>
+                <div v-else>
+                    <b-button
+                            variant="success"
+                            @click="clickButton2(question._id, selected )"
+                    >
+                        Ответить и Показать Результаты
+                    </b-button>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -24,22 +40,32 @@
     import 'highlight.js/styles/agate.css';
     export default {
         name: "QuestionItem",
-        props: {
-            question: {},
-            onClickButton: Function,
-            currentlyIndex: Number
-
-        },
+        props: ['questions', 'answers'],
         data() {
             return {
                 selected: '',
+                currentlyIndex: 0,
+
+
             }
         },
         methods: {
-            clickButton() {
-                console.log("11111")
-                console.log( this.currentlyIndex)
-                this.$parent.$options.methods.changeIndex(++this.currentlyIndex);
+            clickButton(id, selected) {
+                this.answers.push({id,selected })
+                ++this.currentlyIndex
+                this.selected = ''
+            },
+            clickButton2(id, selected) {
+                this.answers.push({id,selected })
+
+            },
+            getCurrentlyIndex() {
+                return this.currentlyIndex
+            },
+            getOptions(val){
+                return Object.entries(val.options).map(([key, value]) => {
+                    return { text: value, value: key   }
+                })
             }
         }
     }

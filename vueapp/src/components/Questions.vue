@@ -1,12 +1,12 @@
 <template>
     <div>
-        {{currentlyIndex}}
-        <Item :question="questions[currentlyIndex]" :onChangeIndex="changeIndex" :currentlyIndex="currentlyIndex"/>
+        <Item :questions="questions" :answers="answers"/>
     </div>
 </template>
 
 <script>
     import Item from './Item.vue'
+
     export default {
         components: {
             Item
@@ -15,17 +15,12 @@
         data() {
             return {
                 error: '',
-                currentlyIndex: 0,
             }
         },
-        props:{questions: {}},
+        props:['questions', 'answers'],
 
         methods: {
-            changeIndex(val) {
-                console.log("FJDFSDFSDF")
-                console.log(val)
-                this.currentlyIndex = val;
-            }
+
         }
     }
 </script>

@@ -2,10 +2,10 @@
     <div class="container">
         <h1>Экзамен по основам JS</h1>
         <div v-if=isStart>
-            <b-button variant="danger" v-on:click="onCLickStart">Начать тестирование</b-button>
+            <b-button variant="danger" @click="onCLickStart">Начать тестирование</b-button>
         </div>
         <div v-else>
-            <Questions v-bind:questions="questions"/>
+            <Questions :questions="questions" :answers="answers"/>
         </div>
     </div>
 </template>
@@ -23,6 +23,7 @@
             return {
                 isStart: true,
                 questions: [],
+                answers:[]
             }
         },
         async created() {
